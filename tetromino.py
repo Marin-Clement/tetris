@@ -44,6 +44,7 @@ class Block(pg.sprite.Sprite):
         translated = self.pos - pivot_pos
         rotated = translated.rotate(90)
         return rotated + pivot_pos
+
     def set_rect_pos(self):
         pos = [self.next_pos,self.pos][self.tetromino.current]
         self.rect.topleft = pos * TILE_SIZE
@@ -75,6 +76,7 @@ class Tetromino:
         if not self.is_collide(new_block_positions):
             for i, block in enumerate(self.blocks):
                 block.pos = new_block_positions[i]
+            self.tetris.app.play_sound("rotate")
 
     def is_collide(self, block_positions):
         return any(map(Block.is_collide, self.blocks, block_positions))
@@ -85,8 +87,10 @@ class Tetromino:
         is_collide = self.is_collide(new_block_position)
 
         if not is_collide:
+            self.tetris.app.play_sound("move")
             for block in self.blocks:
                 block.pos += move_direction
+
         elif direction == 'down':
             self.landing = True
 

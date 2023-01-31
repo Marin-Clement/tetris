@@ -3,16 +3,19 @@ import pygame as pg
 vec = pg.math.Vector2
 
 FPS = 60
-FIELD_COLOR = (48, 39, 32)
-BG_COLOR = (24, 89, 117)
+FIELD_COLOR = (0, 0, 0)
+BG_COLOR = (50, 50, 50)
 
-SPRITE_DIR_PATH = 'Sprites/'
+SOUND_PATH = 'Sound/SoundEffects/'
+MUSIC_PATH = 'Sound/Musics/'
+SPRITE_DIR_PATH = 'Sprites/ColorsTheme/Colors'
+MENU_SPRITE_PATH = 'Sprites/MainMenu/Menu'
 FONT_PATH = 'Font/MatchupPro.ttf'
 
-ANIM_TIME_INTERVAL = 150
-FAST_ANIM_TIME_INTERVAL = 15
-
-TILE_SIZE = 30
+ANIM_TIME_INTERVAL = 500
+FAST_ANIM_TIME_INTERVAL = 30
+HOLD_INTERVAL = 0.75
+TILE_SIZE = 60
 FIELD_SIZE = FIELD_W, FIELD_H = 10, 20
 FIELD_RES = FIELD_W * TILE_SIZE, FIELD_H * TILE_SIZE
 

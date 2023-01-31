@@ -3,22 +3,37 @@ from tetromino import Tetromino
 import pygame.freetype as ft
 
 
+class Menu:
+    def __init__(self, app):
+        self.app = app
+        self.sprite_path = MENU_SPRITE_PATH
+
+    def load_image(self, file, size):
+        image = pg.transform.scale(pg.image.load(MENU_SPRITE_PATH + str(file) + '.png').convert_alpha(), (size[0], size[1]))
+        return image
+
+    def draw(self):
+        self.app.screen.blit(self.load_image(2, (320, 420)), (WIN_W * 0.64, WIN_H * 0.25))
+        self.app.screen.blit(self.load_image(1, (256, 180)), (WIN_W * 0.66, WIN_H * 0.75))
+        self.app.screen.blit(self.load_image(1, (320, 180)), (WIN_W * 0.64, WIN_H * 0.05))
+
+
 class Text:
     def __init__(self, app):
         self.app = app
         self.font = ft.Font(FONT_PATH)
 
     def draw(self):
-        self.font.render_to(self.app.screen, (WIN_W * 0.675, WIN_H * 0.02),
+        self.font.render_to(self.app.screen, (WIN_W * 0.685, WIN_H * 0.1),
                             text='TETRIS', fgcolor='white',
                             size=TILE_SIZE * 1.65)
-        self.font.render_to(self.app.screen, (WIN_W * 0.730, WIN_H * 0.25),
-                            text='next', fgcolor='orange',
+        self.font.render_to(self.app.screen, (WIN_W * 0.730, WIN_H * 0.28),
+                            text='next', fgcolor='white',
                             size=TILE_SIZE * 1.4)
-        self.font.render_to(self.app.screen, (WIN_W * 0.675, WIN_H * 0.67),
-                            text='score', fgcolor='orange',
+        self.font.render_to(self.app.screen, (WIN_W * 0.705, WIN_H * 0.78),
+                            text='score', fgcolor='white',
                             size=TILE_SIZE * 1.4)
-        self.font.render_to(self.app.screen, (WIN_W * 0.675, WIN_H * 0.8),
+        self.font.render_to(self.app.screen, (WIN_W * 0.685, WIN_H * 0.825),
                             text=f'{self.app.tetris.score}', fgcolor='white',
                             size=TILE_SIZE * 1.8)
 
@@ -38,6 +53,14 @@ class Tetris:
 
     def get_score(self):
         self.score += self.points_per_lines[self.full_lines]
+        if self.full_lines == 1:
+            self.app.play_sound("single")
+        elif self.full_lines == 2:
+            self.app.play_sound("double")
+        elif self.full_lines == 3:
+            self.app.play_sound("triple")
+        elif self.full_lines == 4:
+            self.app.play_sound("tetris")
         self.full_lines = 0
 
     def check_full_lines(self):
@@ -57,6 +80,7 @@ class Tetris:
                     self.field_array[row][x] = 0
 
                 self.full_lines += 1
+
     def put_tetromino_blocks_in_array(self):
         for block in self.tetromino.blocks:
             x, y = int(block.pos.x), int(block.pos.y)
@@ -73,8 +97,11 @@ class Tetris:
     def check_tetromino_landing(self):
         if self.tetromino.landing:
             if self.is_game_over():
+                self.app.play_sound("ko")
+                self.app.images = self.app.load_images()
                 self.__init__(self.app)
             else:
+                self.app.play_sound("landing")
                 self.speed_up = False
                 self.put_tetromino_blocks_in_array()
                 self.next_tetromino.current = True
@@ -86,7 +113,7 @@ class Tetris:
             self.tetromino.move(direction='left')
         elif pressed_key == pg.K_RIGHT:
             self.tetromino.move(direction='right')
-        elif pressed_key == pg.K_UP:
+        elif pressed_key == pg.K_UP and self.tetromino.shape != "O":
             self.tetromino.rotate()
         elif pressed_key == pg.K_DOWN:
             self.speed_up = True
@@ -94,7 +121,7 @@ class Tetris:
     def draw_grid(self):
         for x in range(FIELD_W):
             for y in range(FIELD_H):
-                pg.draw.rect(self.app.screen, 'black',
+                pg.draw.rect(self.app.screen, 'white',
                              (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), 1)
 
     def update(self):
@@ -107,5 +134,5 @@ class Tetris:
         self.sprite_group.update()
 
     def draw(self):
-        self.draw_grid()
+        # self.draw_grid()
         self.sprite_group.draw(self.app.screen)
