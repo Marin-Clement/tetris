@@ -1,12 +1,23 @@
 
 <h1>Tetris Game</h1>
-<p>This is a classic game of Tetris where the player tries to clear lines by arranging falling Tetriminos.</p>
-<h2>How to Play</h2>
-<ol>
-  <li>Use the left/right arrow keys to move the falling Tetromino</li>
-  <li>Use the up arrow key to rotate the Tetromino</li>
-  <li>Use the down arrow key to speed up the falling of the Tetromino</li>
-  <li>The game is over when a new Tetromino cannot fit into the game field at the start position</li>
-</ol>
-<h2>Implementation Details</h2>
-<p>The game is built using the Pygame library and uses the font module of Pygame to display the text. The game consists of a <code>Tetris</code> class, which is the main game class and a <code>Text</code> class that displays the text on the screen. The <code>Tetromino</code> class implements the functionality of the falling blocks and the <code>Field</code> class manages the game field. The game's speed increases when the player presses the down arrow key. The game keeps track of the score and the number of full lines that the player has cleared. The game restarts when the player loses.</p>
+![](Screenshot/Tetris.png)
+<p>This project is a Tetris game written in Python using the Pygame library. The game has a menu, sound effects and background music, and customizable graphics. The game includes a <code>settings.py</code> module to store game constants and a <code>tetromino.py</code> module to handle the creation and movement of Tetromino pieces.</p>
+<h2>Requirements</h2>
+<ul>
+  <li>Pygame library (<code>pip install pygame</code>)</li>
+  <li>Python 3.x</li>
+</ul>
+<h2>Game controls</h2>
+<p>The following keys can be used to control the game:</p>
+<ul>
+  <li><code>UP arrow</code> - rotate the Tetromino piece</li>
+  <li><code>DOWN arrow</code> - move the Tetromino piece down faster</li>
+  <li><code>LEFT arrow</code> - move the Tetromino piece to the left</li>
+  <li><code>RIGHT arrow</code> - move the Tetromino piece to the right</li>
+  <li><code>SPACE</code> - drop the Tetromino piece to the bottom</li>
+</ul>
+<h2>Customization</h2>
+<p>The game graphics can be customized by replacing the PNG files in the <code>sprites</code> directory with your own. The file names must be in the format <code>number.png</code> and there must be 10 files in total.</p>
+<p>The background music and sound effects can be changed by replacing the MP3 and WAV files in the <code>music</code> and <code>sound</code> directories, respectively.</p>
+<h2>Conclusion</h2>
+<p>This Tetris game provides a fun and customizable gaming experience. Feel free to use this code as a starting point for your own projects or to learn more about game development using Pygame.</p>
