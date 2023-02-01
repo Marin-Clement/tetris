@@ -117,6 +117,8 @@ class Tetris:
             self.tetromino.rotate()
         elif pressed_key == pg.K_DOWN:
             self.speed_up = True
+        elif pressed_key == pg.K_SPACE:
+            self.tetromino.instant_drop()
 
     def draw_grid(self):
         for x in range(FIELD_W):

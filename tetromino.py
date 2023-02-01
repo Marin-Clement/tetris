@@ -87,12 +87,17 @@ class Tetromino:
         is_collide = self.is_collide(new_block_position)
 
         if not is_collide:
-            self.tetris.app.play_sound("move")
+            if direction != 'down':
+                self.tetris.app.play_sound("move")
             for block in self.blocks:
                 block.pos += move_direction
 
         elif direction == 'down':
             self.landing = True
+
+    def instant_drop(self):
+        while not self.landing:
+            self.move(direction='down')
 
     def update(self):
         self.move(direction='down')
