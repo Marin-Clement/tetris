@@ -1,7 +1,11 @@
 
 <h1>Tetris Game</h1>
-![](Screenshot/Tetris.png)
-<p>This project is a Tetris game written in Python using the Pygame library. The game has a menu, sound effects and background music, and customizable graphics. The game includes a <code>settings.py</code> module to store game constants and a <code>tetromino.py</code> module to handle the creation and movement of Tetromino pieces.</p>
+
+<p align="center">
+  <img width="700" src="Screenshot/Tetris.png">
+</p>
+
+<p align="center">This project is a Tetris game written in Python using the Pygame library. The game has a menu, sound effects and background music, and customizable graphics. The game includes a <code>settings.py</code> module to store game constants and a <code>tetromino.py</code> module to handle the creation and movement of Tetromino pieces.</p>
 <h2>Requirements</h2>
 <ul>
   <li>Pygame library (<code>pip install pygame</code>)</li>
