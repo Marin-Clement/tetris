@@ -66,7 +66,7 @@ class App:
             if event.type == pg.KEYDOWN or self.hold and self.timer >= HOLD_INTERVAL:
                 if not self.last_key:
                     self.last_key = event.key
-                if self.last_key != pg.K_UP or not self.last_key != pg.K_DOWN:
+                if self.last_key not in [pg.K_UP, pg.K_DOWN, pg.K_SPACE]:
                     self.hold = True
                 self.tetris.control(pressed_key=self.last_key)
                 self.timer = 0

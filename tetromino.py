@@ -96,8 +96,8 @@ class Tetromino:
             self.landing = True
 
     def instant_drop(self):
+        self.tetris.speed_up = True
         while not self.landing:
             self.move(direction='down')
-
     def update(self):
         self.move(direction='down')
