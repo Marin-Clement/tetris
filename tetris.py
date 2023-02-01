@@ -109,7 +109,6 @@ class Tetris:
                 self.next_tetromino.current = True
                 self.tetromino = self.next_tetromino
                 self.next_tetromino = Tetromino(self, current=False)
-                print(self.field_array)
 
     def control(self, pressed_key):
         if pressed_key == pg.K_LEFT:
