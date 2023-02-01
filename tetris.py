@@ -13,9 +13,9 @@ class Menu:
         return image
 
     def draw(self):
-        self.app.screen.blit(self.load_image(2, (320, 420)), (WIN_W * 0.64, WIN_H * 0.25))
-        self.app.screen.blit(self.load_image(1, (256, 180)), (WIN_W * 0.66, WIN_H * 0.75))
-        self.app.screen.blit(self.load_image(1, (320, 180)), (WIN_W * 0.64, WIN_H * 0.05))
+        self.app.screen.blit(self.load_image(2, (WIN_W * 0.32, WIN_H * 0.35)), (WIN_W * 0.64, WIN_H * 0.25))
+        self.app.screen.blit(self.load_image(1, (WIN_W * 0.32, WIN_H * 0.15)), (WIN_W * 0.66, WIN_H * 0.75))
+        self.app.screen.blit(self.load_image(1, (WIN_W * 0.32, WIN_H * 0.13)), (WIN_W * 0.64, WIN_H * 0.05))
 
 
 class Text:
@@ -33,7 +33,7 @@ class Text:
         self.font.render_to(self.app.screen, (WIN_W * 0.705, WIN_H * 0.78),
                             text='score', fgcolor='white',
                             size=TILE_SIZE * 1.4)
-        self.font.render_to(self.app.screen, (WIN_W * 0.685, WIN_H * 0.825),
+        self.font.render_to(self.app.screen, (WIN_W * 0.688, WIN_H * 0.825),
                             text=f'{self.app.tetris.score}', fgcolor='white',
                             size=TILE_SIZE * 1.8)
 
@@ -43,13 +43,15 @@ class Tetris:
         self.app = app
         self.sprite_group = pg.sprite.Group()
         self.field_array = self.get_field_array()
-        self.tetromino = Tetromino(self)
-        self.next_tetromino = Tetromino(self, current=False)
         self.speed_up = False
+        self.cheat = False
 
         self.score = 0
         self.full_lines = 0
         self.points_per_lines = {0: 0, 1: 40, 2: 100, 3: 300, 4: 1200}
+
+        self.tetromino = Tetromino(self)
+        self.next_tetromino = Tetromino(self, current=False)
 
     def get_score(self):
         self.score += self.points_per_lines[self.full_lines]
@@ -107,6 +109,7 @@ class Tetris:
                 self.next_tetromino.current = True
                 self.tetromino = self.next_tetromino
                 self.next_tetromino = Tetromino(self, current=False)
+                print(self.field_array)
 
     def control(self, pressed_key):
         if pressed_key == pg.K_LEFT:
@@ -120,6 +123,8 @@ class Tetris:
         elif pressed_key == pg.K_SPACE:
             self.tetromino.instant_drop()
             self.app.last_key = None
+        elif pressed_key == pg.K_i:
+            self.cheat = True
 
     def draw_grid(self):
         for x in [block.pos.x for block in self.tetromino.blocks]:

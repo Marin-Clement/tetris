@@ -63,7 +63,10 @@ class Block(pg.sprite.Sprite):
 class Tetromino:
     def __init__(self, tetris, current=True):
         self.tetris = tetris
-        self.shape = random.choice(list(TETROMINOES.keys()))
+        if tetris.cheat:
+            self.shape = 'I'
+        else:
+            self.shape = random.choice(list(TETROMINOES.keys()))
         self.image = random.choice(tetris.app.images)
         self.blocks = [Block(self, pos) for pos in TETROMINOES[self.shape]]
         self.landing = False
@@ -99,5 +102,6 @@ class Tetromino:
         self.tetris.speed_up = True
         while not self.landing:
             self.move(direction='down')
+
     def update(self):
         self.move(direction='down')
