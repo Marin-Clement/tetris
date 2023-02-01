@@ -26,6 +26,9 @@ INIT_POS_OFFSET = vec(FIELD_W // 2 - 1, 0)
 NEXT_POS_OFFSET = vec(FIELD_W * 1.3, FIELD_H * 0.45)
 MOVE_DIRECTIONS = {'left': vec(-1, 0), 'right': vec(1, 0), 'down': vec(0, 1)}
 
+# User Option
+HELP_LINE = True
+
 TETROMINOES = {
     'T': [(0, 0), (-1, 0), (1, 0), (0, -1)],
     'O': [(0, 0), (0, -1), (1, 0), (1, -1)],

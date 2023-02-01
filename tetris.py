@@ -119,12 +119,14 @@ class Tetris:
             self.speed_up = True
         elif pressed_key == pg.K_SPACE:
             self.tetromino.instant_drop()
+            self.app.last_key = None
 
     def draw_grid(self):
-        for x in range(FIELD_W):
-            for y in range(FIELD_H):
-                pg.draw.rect(self.app.screen, 'white',
-                             (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), 1)
+        for x in [block.pos.x for block in self.tetromino.blocks]:
+                for y in range(FIELD_H):
+                    for z in [block.pos.y for block in self.tetromino.blocks]:
+                        if z < y:
+                            pg.draw.rect(self.app.screen, 'grey', (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), 1)
 
     def update(self):
         trigger = [self.app.anim_trigger, self.app.fast_anim_trigger][self.speed_up]
@@ -136,5 +138,6 @@ class Tetris:
         self.sprite_group.update()
 
     def draw(self):
-        # self.draw_grid()
+        if HELP_LINE:
+            self.draw_grid()
         self.sprite_group.draw(self.app.screen)
