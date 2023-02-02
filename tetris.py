@@ -3,19 +3,61 @@ from tetromino import Tetromino
 import pygame.freetype as ft
 
 
+class Button:
+    def __init__(self, app, sprite, hover_sprite, size, rect, command):
+        self.app = app
+        self.rect = pg.Rect(rect, size)
+        self.sprite = pg.transform.scale(pg.image.load(sprite),size )
+        self.hover_sprite = pg.transform.scale(pg.image.load(hover_sprite), size)
+        self.command = command
+        self.hover = False
+
+    def render(self):
+        if self.hover:
+            self.app.screen.blit(self.hover_sprite, self.rect)
+        else:
+            self.app.screen.blit(self.sprite, self.rect)
+
+    def get_event(self, event):
+        if self.rect.collidepoint(pg.mouse.get_pos()):
+            self.hover = True
+        else:
+            self.hover = False
+        if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
+            if self.rect.collidepoint(pg.mouse.get_pos()):
+                self.command()
+
+
 class Menu:
     def __init__(self, app):
         self.app = app
         self.sprite_path = MENU_SPRITE_PATH
+        self.start_button = Button(app, f"Sprites/MainMenu/Start0.png", f"Sprites/MainMenu/Start1.png",
+                                   (WIN_W * 0.50, WIN_H * 0.10), (WIN_W * 0.26, WIN_H * 0.4), lambda: self.app.tetris.change_game_state('game'))
+        self.start_button_marathon = Button(app, f"Sprites/MainMenu/marathon0.png", f"Sprites/MainMenu/marathon1.png",
+                                   (WIN_W * 0.55, WIN_H * 0.10), (WIN_W * 0.235, WIN_H * 0.52), lambda: print("momo"))
+        self.option_button = Button(app, f"Sprites/MainMenu/options0.png", f"Sprites/MainMenu/options1.png",
+                                   (WIN_W * 0.60, WIN_H * 0.10), (WIN_W * 0.212, WIN_H * 0.64), lambda: print("momo"))
+        self.score_board_button = Button(app, f"Sprites/MainMenu/scoreboard0.png", f"Sprites/MainMenu/scoreboard1.png",
+                                   (WIN_W * 0.65, WIN_H * 0.10), (WIN_W * 0.19, WIN_H * 0.76), lambda: print("momo"))
+
+
 
     def load_image(self, file, size):
         image = pg.transform.scale(pg.image.load(MENU_SPRITE_PATH + str(file) + '.png').convert_alpha(), (size[0], size[1]))
         return image
 
     def draw(self):
-        self.app.screen.blit(self.load_image(2, (WIN_W * 0.32, WIN_H * 0.35)), (WIN_W * 0.64, WIN_H * 0.25))
-        self.app.screen.blit(self.load_image(1, (WIN_W * 0.32, WIN_H * 0.15)), (WIN_W * 0.66, WIN_H * 0.75))
-        self.app.screen.blit(self.load_image(1, (WIN_W * 0.32, WIN_H * 0.13)), (WIN_W * 0.64, WIN_H * 0.05))
+        if self.app.tetris.game_state == 'main_menu':
+            self.app.screen.blit(self.load_image(0, (WIN_W * 0.5, WIN_H * 0.3)), (WIN_W * 0.25, WIN_H * 0.02))
+            self.start_button.render()
+            self.start_button_marathon.render()
+            self.option_button.render()
+            self.score_board_button.render()
+        elif self.app.tetris.game_state == 'game':
+            self.app.screen.blit(self.load_image(2, (WIN_W * 0.32, WIN_H * 0.35)), (WIN_W * 0.64, WIN_H * 0.25))
+            self.app.screen.blit(self.load_image(1, (WIN_W * 0.28, WIN_H * 0.15)), (WIN_W * 0.66, WIN_H * 0.75))
+            self.app.screen.blit(self.load_image(1, (WIN_W * 0.32, WIN_H * 0.13)), (WIN_W * 0.64, WIN_H * 0.05))
 
 
 class Text:
@@ -24,23 +66,25 @@ class Text:
         self.font = ft.Font(FONT_PATH)
 
     def draw(self):
-        self.font.render_to(self.app.screen, (WIN_W * 0.685, WIN_H * 0.1),
-                            text='TETRIS', fgcolor='white',
-                            size=TILE_SIZE * 1.65)
-        self.font.render_to(self.app.screen, (WIN_W * 0.730, WIN_H * 0.28),
-                            text='next', fgcolor='white',
-                            size=TILE_SIZE * 1.4)
-        self.font.render_to(self.app.screen, (WIN_W * 0.705, WIN_H * 0.78),
-                            text='score', fgcolor='white',
-                            size=TILE_SIZE * 1.4)
-        self.font.render_to(self.app.screen, (WIN_W * 0.688, WIN_H * 0.825),
-                            text=f'{self.app.tetris.score}', fgcolor='white',
-                            size=TILE_SIZE * 1.8)
+        if self.app.tetris.game_state == 'game':
+            self.font.render_to(self.app.screen, (WIN_W * 0.685, WIN_H * 0.1),
+                                text='TETRIS', fgcolor='white',
+                                size=TILE_SIZE * 1.65)
+            self.font.render_to(self.app.screen, (WIN_W * 0.730, WIN_H * 0.28),
+                                text='next', fgcolor='white',
+                                size=TILE_SIZE * 1.4)
+            self.font.render_to(self.app.screen, (WIN_W * 0.705, WIN_H * 0.78),
+                                text='score', fgcolor='white',
+                                size=TILE_SIZE * 1.4)
+            self.font.render_to(self.app.screen, (WIN_W * 0.688, WIN_H * 0.825),
+                                text=f'{self.app.tetris.score}', fgcolor='white',
+                                size=TILE_SIZE * 1.8)
 
 
 class Tetris:
     def __init__(self, app):
         self.app = app
+        self.game_state = 'main_menu'
         self.sprite_group = pg.sprite.Group()
         self.field_array = self.get_field_array()
         self.speed_up = False
@@ -52,6 +96,9 @@ class Tetris:
 
         self.tetromino = Tetromino(self)
         self.next_tetromino = Tetromino(self, current=False)
+
+    def change_game_state(self, state):
+        self.game_state = state
 
     def get_score(self):
         self.score += self.points_per_lines[self.full_lines]
@@ -127,10 +174,10 @@ class Tetris:
 
     def draw_grid(self):
         for x in [block.pos.x for block in self.tetromino.blocks]:
-                for y in range(FIELD_H):
-                    for z in [block.pos.y for block in self.tetromino.blocks]:
-                        if z < y:
-                            pg.draw.rect(self.app.screen, 'grey', (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), 1)
+            for y in range(FIELD_H):
+                for z in [block.pos.y for block in self.tetromino.blocks]:
+                    if z < y:
+                        pg.draw.rect(self.app.screen, 'grey', (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), 1)
 
     def update(self):
         trigger = [self.app.anim_trigger, self.app.fast_anim_trigger][self.speed_up]
