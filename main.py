@@ -23,15 +23,17 @@ class App:
 
     def play_sound(self, sound):
         sound_loaded = pg.mixer.Sound(SOUND_PATH + sound + ".wav")
+        sound_loaded.set_volume(VOLUME)
         sound_loaded.play()
 
     def play_music(self):
         pg.mixer.music.load(MUSIC_PATH + "MainTheme.mp3")
-        pg.mixer.music.set_volume(0.15)
+        pg.mixer.music.set_volume(VOLUME)
         pg.mixer.music.play(-1)
 
     def load_images(self):
-        files = [item for item in pathlib.Path(SPRITE_DIR_PATH + str(random.randrange(1, 10))).rglob('*.png') if item.is_file()]
+        files = [item for item in pathlib.Path(SPRITE_DIR_PATH + str(random.randrange(1, 10))).rglob('*.png') if
+                 item.is_file()]
         images = [pg.image.load(file).convert_alpha() for file in files]
         images = [pg.transform.scale(image, (TILE_SIZE, TILE_SIZE)) for image in images]
         return images
@@ -66,16 +68,20 @@ class App:
         self.anim_trigger = False
         self.fast_anim_trigger = False
         for event in pg.event.get():
+
             if self.tetris.game_state == 'main_menu':
                 self.menu.start_button.get_event(event)
                 self.menu.start_button_marathon.get_event(event)
                 self.menu.option_button.get_event(event)
                 self.menu.score_board_button.get_event(event)
-            if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE) and self.tetris.game_state == 'game':
-                self.tetris.change_game_state('main_menu')
+            if event.type == pg.QUIT or (
+                    event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE) and self.tetris.game_state == 'game':
                 self.images = self.load_images()
                 self.tetris.__init__(self)
-            elif event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE) and self.tetris.game_state == 'main_menu':
+                self.tetris.change_game_state('main_menu', None)
+
+            elif event.type == pg.QUIT or (
+                    event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE) and self.tetris.game_state == 'main_menu':
                 quit()
             if self.tetris.game_state == 'game':
                 if event.type == pg.KEYDOWN or self.hold and self.timer >= HOLD_INTERVAL:
@@ -93,6 +99,14 @@ class App:
                     self.anim_trigger = True
                 elif event.type == self.fast_user_event:
                     self.fast_anim_trigger = True
+
+    def convert(self, seconds):
+        seconds = seconds % (24 * 3600)
+        seconds %= 3600
+        minutes = seconds // 60
+        seconds %= 60
+
+        return "%02d:%02d" % (minutes, seconds)
 
     def run(self):
         while True:
