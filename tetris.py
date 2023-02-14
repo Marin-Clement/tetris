@@ -1,3 +1,4 @@
+import settings
 from settings import *
 from tetromino import Tetromino
 import pygame.freetype as ft
@@ -40,7 +41,7 @@ class Menu:
         self.option_button = Button(app, f"Sprites/MainMenu/options0.png", f"Sprites/MainMenu/options1.png",
                                    (WIN_W * 0.60, WIN_H * 0.10), (WIN_W * 0.212, WIN_H * 0.64), lambda: print("momo"))
         self.score_board_button = Button(app, f"Sprites/MainMenu/scoreboard0.png", f"Sprites/MainMenu/scoreboard1.png",
-                                   (WIN_W * 0.65, WIN_H * 0.10), (WIN_W * 0.19, WIN_H * 0.76), lambda: print("momo"))
+                                   (WIN_W * 0.65, WIN_H * 0.10), (WIN_W * 0.19, WIN_H * 0.76), lambda: self.app.tetris.change_game_state('scoreboard', None))
 
     def load_image(self, file, size):
         image = pg.transform.scale(pg.image.load(MENU_SPRITE_PATH + str(file) + '.png').convert_alpha(), (size[0], size[1]))
@@ -61,6 +62,10 @@ class Menu:
             else:
                 self.app.screen.blit(self.load_image(1, (WIN_W * 0.28, WIN_H * 0.15)), (WIN_W * 0.66, WIN_H * 0.62))
                 self.app.screen.blit(self.load_image(1, (WIN_W * 0.28, WIN_H * 0.15)), (WIN_W * 0.66, WIN_H * 0.80))
+        elif self.app.tetris.game_state == 'scoreboard':
+            self.app.screen.blit(self.load_image(2, (WIN_W * 0.45, WIN_H * 0.82)), (WIN_W * 0.01, WIN_H * 0.19))
+            self.app.screen.blit(self.load_image(2, (WIN_W * 0.48, WIN_H * 0.82)), (WIN_W * 0.515, WIN_H * 0.19))
+            self.app.print_top_scores()
 
 
 class Text:
@@ -96,6 +101,17 @@ class Text:
                 self.font.render_to(self.app.screen, (WIN_W * 0.710, WIN_H * 0.875),
                                     text=f'{self.app.convert(self.app.tetris.time)}', fgcolor='white',
                                     size=TILE_SIZE * 1.8)
+        if self.app.tetris.game_state == 'scoreboard':
+            self.font.render_to(self.app.screen, (WIN_W * 0.274, WIN_H * 0.08),
+                                text='ScoreBoard', fgcolor='white',
+                                size=TILE_SIZE * 2)
+
+            self.font.render_to(self.app.screen, (WIN_W * 0.09, WIN_H * 0.28),
+                                text='Classic', fgcolor='white',
+                                size=TILE_SIZE * 2)
+            self.font.render_to(self.app.screen, (WIN_W * 0.56, WIN_H * 0.28),
+                                text='Marathon', fgcolor='white',
+                                size=TILE_SIZE * 2)
 
 
 class Tetris:
@@ -118,6 +134,7 @@ class Tetris:
         self.next_tetromino = Tetromino(self, current=False)
 
     def quit_game(self):
+        self.app.check_new_score(settings.PLAYER_NAME,self.score)
         self.app.play_sound("ko")
         self.app.images = self.app.load_images()
         self.__init__(self.app)

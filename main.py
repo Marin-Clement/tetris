@@ -3,6 +3,7 @@ from tetris import Tetris, Text, Menu
 import sys
 import pathlib
 import random
+import json
 
 
 class App:
@@ -20,6 +21,50 @@ class App:
         self.hold = False
         self.last_key = None
         self.timer = 0
+
+    def print_top_scores(self):
+        y_offset = 0
+        try:
+            with open("Data/scores.json", "r") as f:
+                data = json.load(f)
+        except:
+            data = {"basic": {}, "marathon": {}}
+        sorted_scores = sorted(data["basic"].items(), key=lambda x: x[1], reverse=True)
+        for i in range(min(5, len(sorted_scores))):
+            self.screen.blit(
+                pg.font.Font(FONT_PATH, int(TILE_SIZE * 0.8)).render(f"{i + 1}. {sorted_scores[i][0]}: {sorted_scores[i][1]}", True,
+                                                   (255, 255, 255)), (WIN_W * 0.07, (WIN_H * 0.37) + y_offset))
+            y_offset += 100
+        sorted_scores = sorted(data["marathon"].items(), key=lambda x: x[1], reverse=True)
+        y_offset = 0
+        for i in range(min(5, len(sorted_scores))):
+            self.screen.blit(
+                pg.font.Font(FONT_PATH, int(TILE_SIZE * 0.8)).render(f"{i + 1}. {sorted_scores[i][0]}: {sorted_scores[i][1]}", True,
+                                                   (255, 255, 255)), (WIN_W * 0.57, (WIN_H * 0.37) + y_offset))
+            y_offset += 100
+
+    def save_score(self, player_name, score):
+        try:
+            with open("Data/scores.json", "r") as f:
+                data = json.load(f)
+        except:
+            data = {"basic": {}, "marathon": {}}
+        data[self.tetris.game_mode][player_name] = score
+        with open("Data/scores.json", "w") as f:
+            json.dump(data, f)
+
+    def check_new_score(self, player_name, new_score):
+        try:
+            with open("Data/scores.json", "r") as f:
+                data = json.load(f)
+        except:
+            data = {"basic": {}, "marathon": {}}
+        if player_name in data:
+            previous_score = data[player_name]
+            if new_score > previous_score:
+                self.save_score(player_name, new_score)
+        else:
+            self.save_score(player_name, new_score)
 
     def play_sound(self, sound):
         sound_loaded = pg.mixer.Sound(SOUND_PATH + sound + ".wav")
@@ -57,6 +102,8 @@ class App:
         elif self.tetris.game_state == 'game':
             self.screen.fill(color=BG_COLOR)
             self.screen.fill(color=FIELD_COLOR, rect=(0, 0, *FIELD_RES))
+        elif self.tetris.game_state == 'scoreboard':
+            self.screen.fill(color=BG_COLOR)
         self.menu.draw()
         self.text.draw()
         if self.tetris.game_state == 'game':
@@ -75,7 +122,7 @@ class App:
                 self.menu.option_button.get_event(event)
                 self.menu.score_board_button.get_event(event)
             if event.type == pg.QUIT or (
-                    event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE) and self.tetris.game_state == 'game':
+                    event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE) and self.tetris.game_state in ['game', 'scoreboard']:
                 self.images = self.load_images()
                 self.tetris.__init__(self)
                 self.tetris.change_game_state('main_menu', None)

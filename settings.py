@@ -29,6 +29,7 @@ MOVE_DIRECTIONS = {'left': vec(-1, 0), 'right': vec(1, 0), 'down': vec(0, 1)}
 # User Option
 VOLUME = 0.1
 HELP_LINE = True
+PLAYER_NAME = 'Clement'
 
 TETROMINOES = {
     'T': [(0, 0), (-1, 0), (1, 0), (0, -1)],
