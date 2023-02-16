@@ -112,6 +112,7 @@ class App:
         pg.display.flip()
 
     def check_events(self):
+        global PLAYER_NAME
         self.anim_trigger = False
         self.fast_anim_trigger = False
         for event in pg.event.get():
@@ -119,7 +120,6 @@ class App:
             if self.tetris.game_state == 'main_menu':
                 self.menu.start_button.get_event(event)
                 self.menu.start_button_marathon.get_event(event)
-                self.menu.option_button.get_event(event)
                 self.menu.score_board_button.get_event(event)
             if event.type == pg.QUIT or (
                     event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE) and self.tetris.game_state in ['game', 'scoreboard']:

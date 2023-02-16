@@ -38,10 +38,8 @@ class Menu:
                                    (WIN_W * 0.50, WIN_H * 0.10), (WIN_W * 0.26, WIN_H * 0.4), lambda: self.app.tetris.change_game_state('game', 'basic'))
         self.start_button_marathon = Button(app, f"Sprites/MainMenu/marathon0.png", f"Sprites/MainMenu/marathon1.png",
                                    (WIN_W * 0.55, WIN_H * 0.10), (WIN_W * 0.235, WIN_H * 0.52), lambda: self.app.tetris.change_game_state('game', 'marathon'))
-        self.option_button = Button(app, f"Sprites/MainMenu/options0.png", f"Sprites/MainMenu/options1.png",
-                                   (WIN_W * 0.60, WIN_H * 0.10), (WIN_W * 0.212, WIN_H * 0.64), lambda: print("momo"))
         self.score_board_button = Button(app, f"Sprites/MainMenu/scoreboard0.png", f"Sprites/MainMenu/scoreboard1.png",
-                                   (WIN_W * 0.65, WIN_H * 0.10), (WIN_W * 0.19, WIN_H * 0.76), lambda: self.app.tetris.change_game_state('scoreboard', None))
+                                   (WIN_W * 0.60, WIN_H * 0.10), (WIN_W * 0.212, WIN_H * 0.64), lambda: self.app.tetris.change_game_state('scoreboard', None))
 
     def load_image(self, file, size):
         image = pg.transform.scale(pg.image.load(MENU_SPRITE_PATH + str(file) + '.png').convert_alpha(), (size[0], size[1]))
@@ -52,7 +50,6 @@ class Menu:
             self.app.screen.blit(self.load_image(0, (WIN_W * 0.5, WIN_H * 0.3)), (WIN_W * 0.25, WIN_H * 0.02))
             self.start_button.render()
             self.start_button_marathon.render()
-            self.option_button.render()
             self.score_board_button.render()
         elif self.app.tetris.game_state == 'game':
             self.app.screen.blit(self.load_image(2, (WIN_W * 0.32, WIN_H * 0.35)), (WIN_W * 0.64, WIN_H * 0.25))
